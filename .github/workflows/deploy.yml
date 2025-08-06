@@ -1,0 +1,31 @@
+name: Deploy to Cloudflare Workers
+
+# 控制工作流触发的条件
+on:
+  # 当推送到 main 分支时触发
+  push:
+    branches:
+      - main # 您可以根据需要修改为 master 或其他分支名
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 虚拟机环境
+    name: Deploy
+    steps:
+      # 第 1 步：检出代码
+      # 这个步骤会下载你的仓库代码到虚拟机中
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 第 2 步：发布到 Cloudflare Workers
+      # 使用 Cloudflare 官方提供的 wrangler-action 工具进行部署
+      - name: Publish to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          # 引用我们之前在 GitHub Secrets 中设置的 API 令牌
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # 在这里填入你的 Cloudflare Account ID
+          accountId: "4a53b0ce4860de72f86ecc2876ed984e"
+          # 在这里填写你的 wrangler.toml 文件中定义的 Worker 名称 (name = "...")
+          # 如果你的仓库根目录没有 wrangler.toml，请确保在这里正确填写 Worker 名称
+          name: "gemini" 
